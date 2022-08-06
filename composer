@@ -1,0 +1,8 @@
+#!/bin/bash
+SCRIPTPATH="$(realpath $0)"
+SCRIPTDIR="$(dirname $SCRIPTPATH)"
+#Define Windows PHP binary path:
+PHPBin='D:\Workroot\phpStudy\php74n\php.exe'
+PharFile="$SCRIPTDIR/2.2.X-LTS/composer.phar"
+echo -e "Run Composer from Cygwin Or Linux-like window..."
+IFS=$(echo -e "\n") cmd /c "$PHPBin" `cygpath -aw $PharFile` $@

@@ -1,0 +1,1 @@
+CreateObject("Shell.Application").ShellExecute "SetEnvironment.exe","-add " & createobject("Scripting.FileSystemObject").GetFolder(".").Path

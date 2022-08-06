@@ -1,0 +1,6 @@
+#!/bin/bash
+SCRIPTPATH="$(realpath $0)"
+SCRIPTDIR="$(dirname $SCRIPTPATH)"
+BatFile="$SCRIPTDIR/composer2.bat"
+
+cmd /c "`cygpath -aw $BatFile`" $@
