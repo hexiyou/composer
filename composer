@@ -1,8 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#本文件供Cygwin/MSYS2等工具调用
+# author：hexiyou.cn@gmail.com
+
 SCRIPTPATH="$(realpath $0)"
 SCRIPTDIR="$(dirname $SCRIPTPATH)"
+
+#从Windows PATH环境变量中获取PHP的完整真实路径！
+#保存PHP的文件夹名称必须为php-x.x.xx这样的形式（包含这样的字符串即可，非全字匹配），否则匹配不到
+_get_win_PHP_path() {
+	local path="$1"
+	[ -z "$path" ] && return
+	local pathList=$(echo "$path"|tr ':' '\n')
+	local phpbin=$(echo "$pathList"|grep -m 1 -iE 'php\-[0-9]{1}\.[0-9]{1}\.[0-9]{1,2}')
+	[ ! -z "$phpbin" ] && echo "$(cygpath -aw "$phpbin")\\php.exe"
+}
+
 #Define Windows PHP binary path:
-PHPBin='D:\Workroot\phpStudy\php74n\php.exe'
+#PHPBin='D:\Workroot\phpStudy\php74n\php.exe'   # <---- 如果设置固定路径，必须指定正确的Windows版本的PHP路径，否则会有问题
+PHPBin=$(_get_win_PHP_path "$ORIGINAL_PATH")    # <---- 动态从Windows环境变量%PATH%中获取PHP路径
+
+if [ -z "$PHPBin" -o ! -f "$PHPBin" ];then
+	echo "\$PHPBin 为空或文件不存在，程序退出！"
+	exit 1
+fi
+
 PharFile="$SCRIPTDIR/2.2.X-LTS/composer.phar"
 echo -e "Run Composer from Cygwin Or Linux-like window..."
 IFS=$(echo -e "\n") cmd /c "$PHPBin" `cygpath -aw $PharFile` $@
