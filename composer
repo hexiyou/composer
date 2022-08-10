@@ -27,4 +27,4 @@ fi
 PharFile="$SCRIPTDIR/2.2.X-LTS/composer.phar"
 PharFileWin=$(cygpath -aw "$PharFile")
 echo -e "Run Composer from Cygwin Or Linux-like window..."
-IFS=$(echo -e "\n") PATH="${ORIGINAL_PATH}" cmd /c "$PHPBin" $PharFileWin $@
+IFS=$(echo -e "\n") PATH="/v/win-alias:${ORIGINAL_PATH}" cmd /c "$PHPBin" $PharFileWin $@
