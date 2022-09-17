@@ -15,9 +15,12 @@ _get_win_PHP_path() {
 	[ ! -z "$phpbin" ] && echo "$(cygpath -aw "$phpbin")\\php.exe"
 }
 
-#Define Windows PHP binary path:
+#可在交互式终端中使用export PHPBIN='D:\Workroot\phpStudy\php74n\php.exe' 临时更改composer使用的PHP版本(注意此处导出变量名要全部大写)
+#-------------------------------
+
+#Define Windows PHP binary static path:
 #PHPBin='D:\Workroot\phpStudy\php74n\php.exe'   # <---- 如果设置固定路径，必须指定正确的Windows版本的PHP路径，否则会有问题
-PHPBin=$(_get_win_PHP_path "$ORIGINAL_PATH")    # <---- 动态从Windows环境变量%PATH%中获取PHP路径
+[ ! -z "$PHPBIN" ] && PHPBin="$PHPBIN" || PHPBin=$(_get_win_PHP_path "$ORIGINAL_PATH")    # <---- 动态从Windows环境变量%PATH%中获取PHP路径
 
 if [ -z "$PHPBin" -o ! -f "$PHPBin" ];then
 	echo "\$PHPBin 为空或文件不存在，程序退出！"

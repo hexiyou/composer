@@ -3,4 +3,4 @@
 SCRIPTDIR=$(dirname "$0")
 
 # Run truely composer commands...
-$SCRIPTDIR/composer $@
+$SCRIPTDIR/composer "$@"
