@@ -14,3 +14,48 @@ composer() {
 		print_color 9 "PHP Composer未安装，请安装Composer并将其加入 %PATH% 环境变量！"
 	fi
 }
+
+composer-select-php() {
+	#交互式选择composer使用的PHP版本，供多版本Windows PHP切换使用；
+	#local phpBin_8.0='H:\PHP_Work\php-8.0.22-nts-Win32-vs16-x64\php.exe'
+	local phpBins=$(cat <<'EOF'
+H:\PHP_Work\php-7.4.12-nts-Win32-vc15-x64\php.exe
+H:\PHP_Work\php-8.0.6-nts-Win32-vs16-x64\php.exe
+H:\PHP_Work\php-8.0.22-nts-Win32-vs16-x64\php.exe
+H:\PHP_Work\php-8.1.9-nts-Win32-vs16-x64\php.exe
+H:\PHP_Work\php-8.1.11-nts-Win32-vs16-x64\php.exe
+EOF
+)
+	print_color 33 "【composer-select-php】交互式选择Composer要使用的Windows PHP版本："
+	[ ! -z "$1" ] && local phpBins=$(echo "$phpBins"|grep -i "$1") #$1传递了参数则对手册列表按关键字过滤
+	echo "$phpBins"|awk '{print NR" )："$0}'
+	while :;
+	do
+		read -p "请输入序号选择要使用的PHP（ 0 或 q 退出操作）：" choosePHP
+		if [[ "${choosePHP,,}" == "0" || "${choosePHP,,}" == "q" ]];then
+			print_color 40 "退出操作..."
+			return
+		elif [ -z "$choosePHP" ];then
+			#print_color 40 "选择为空，请重新选择..."
+			print_color 40 "PHP 版本未更改，退出操作..." && return
+		else
+			local phpEXE=$(echo "$phpBins"|awk 'NR=='${choosePHP}'{print;exit}' 2>/dev/null)
+			if [ -z "$phpEXE" ];then
+				print_color 40 "选择无效，请重新选择...."
+			elif [[ "$phpEXE" =~ "------" ]];then
+				print_color 40 "选择了分隔线，选择无效，请重新选择...."
+			else
+				break
+			fi
+		fi
+	done
+	echo "你选择的PHP版本：$phpEXE ..."
+	if [ ! -f "$phpEXE" ];then
+		print_color 9 "你选择的PHP可执行文件不存在，请检查..."
+		return
+	fi
+	export PHPBIN="$phpEXE"
+	print_color 40 "检查 \$PHPBIN 环境变量..."
+	echo "$PHPBIN"
+	print_color "设置 Done..."
+}
